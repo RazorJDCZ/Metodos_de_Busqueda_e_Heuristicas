@@ -1,0 +1,268 @@
+@prefix :      <http://example.org/usfq/tarea1#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Ontología
+#################################################################
+
+:OntologiaTarea1 a owl:Ontology ;
+  rdfs:label "Ontología Tarea I - Métodos de Búsqueda, Juegos y Heurística (USFQ 202510)"@es ;
+  rdfs:comment "Modelo semántico del enunciado de la tarea: ejercicios, algoritmos, heurísticas, lenguajes y entregables."@es .
+
+#################################################################
+# Clases
+#################################################################
+
+:Tarea           a owl:Class ; rdfs:label "Tarea"@es .
+:Curso           a owl:Class ; rdfs:label "Curso"@es .
+:Semestre        a owl:Class ; rdfs:label "Semestre"@es .
+:Ejercicio       a owl:Class ; rdfs:label "Ejercicio"@es .
+:Problema        a owl:Class ; rdfs:label "Problema"@es .
+:Juego           a owl:Class ; rdfs:label "Juego"@es ; rdfs:subClassOf :Problema .
+:ProblemaLogico  a owl:Class ; rdfs:label "Problema lógico"@es ; rdfs:subClassOf :Problema .
+:AlgoritmoBusqueda a owl:Class ; rdfs:label "Algoritmo de búsqueda"@es .
+:Estrategia      a owl:Class ; rdfs:label "Estrategia"@es .
+:Heuristica      a owl:Class ; rdfs:label "Heurística"@es .
+:EstructuraEstado a owl:Class ; rdfs:label "Estructura de estados"@es .
+:Grafo           a owl:Class ; rdfs:label "Grafo"@es ; rdfs:subClassOf :EstructuraEstado .
+:Arbol           a owl:Class ; rdfs:label "Árbol"@es ; rdfs:subClassOf :EstructuraEstado .
+:Estado          a owl:Class ; rdfs:label "Estado"@es .
+:Lenguaje        a owl:Class ; rdfs:label "Lenguaje de programación"@es .
+:Archivo         a owl:Class ; rdfs:label "Archivo"@es .
+:Entregable      a owl:Class ; rdfs:label "Entregable"@es .
+:Profesor        a owl:Class ; rdfs:label "Profesor"@es .
+:Herramienta     a owl:Class ; rdfs:label "Herramienta"@es .
+:OntologiaOWL    a owl:Class ; rdfs:label "Ontología OWL"@es ; rdfs:subClassOf :Archivo .
+:Visualizacion   a owl:Class ; rdfs:label "Visualización"@es .
+
+#################################################################
+# Propiedades de objeto
+#################################################################
+
+:tieneEjercicio a owl:ObjectProperty ;
+  rdfs:label "tiene ejercicio"@es ;
+  rdfs:domain :Tarea ; rdfs:range :Ejercicio .
+
+:abordaProblema a owl:ObjectProperty ;
+  rdfs:label "aborda problema"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :Problema .
+
+:utilizaAlgoritmo a owl:ObjectProperty ;
+  rdfs:label "utiliza algoritmo"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :AlgoritmoBusqueda .
+
+:utilizaHeuristica a owl:ObjectProperty ;
+  rdfs:label "utiliza heurística"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :Heuristica .
+
+:requiereEstructura a owl:ObjectProperty ;
+  rdfs:label "requiere estructura"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :EstructuraEstado .
+
+:tieneEstadoInicial a owl:ObjectProperty ;
+  rdfs:label "tiene estado inicial"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :Estado .
+
+:tieneEstadoFinal a owl:ObjectProperty ;
+  rdfs:label "tiene estado final"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :Estado .
+
+:seProgramaEn a owl:ObjectProperty ;
+  rdfs:label "se programa en"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :Lenguaje .
+
+:requiereVerificacionCon a owl:ObjectProperty ;
+  rdfs:label "requiere verificación con"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :Lenguaje .
+
+:requiereHerramienta a owl:ObjectProperty ;
+  rdfs:label "requiere herramienta"@es ;
+  rdfs:domain :Ejercicio ; rdfs:range :Herramienta .
+
+:defineEntregable a owl:ObjectProperty ;
+  rdfs:label "define entregable"@es ;
+  rdfs:domain :Tarea ; rdfs:range :Entregable .
+
+:enSemestre a owl:ObjectProperty ;
+  rdfs:label "en semestre"@es ;
+  rdfs:domain :Tarea ; rdfs:range :Semestre .
+
+:perteneceACurso a owl:ObjectProperty ;
+  rdfs:label "pertenece a curso"@es ;
+  rdfs:domain :Tarea ; rdfs:range :Curso .
+
+:dirigidaPor a owl:ObjectProperty ;
+  rdfs:label "dirigida por"@es ;
+  rdfs:domain :Tarea ; rdfs:range :Profesor .
+
+:visualizaCon a owl:ObjectProperty ;
+  rdfs:label "visualiza con"@es ;
+  rdfs:domain :OntologiaOWL ; rdfs:range :Herramienta .
+
+#################################################################
+# Propiedades de datos
+#################################################################
+
+:titulo a owl:DatatypeProperty ; rdfs:label "título"@es ; rdfs:domain :Archivo ; rdfs:range xsd:string .
+:descripcion a owl:DatatypeProperty ; rdfs:label "descripción"@es ; rdfs:domain owl:Thing ; rdfs:range xsd:string .
+:identificador a owl:DatatypeProperty ; rdfs:label "identificador"@es ; rdfs:domain owl:Thing ; rdfs:range xsd:string .
+:tamanoTablero a owl:DatatypeProperty ; rdfs:label "tamaño de tablero"@es ; rdfs:domain :Problema ; rdfs:range xsd:string .
+:requiereCodigoFuente a owl:DatatypeProperty ; rdfs:label "requiere código fuente"@es ; rdfs:domain :Entregable ; rdfs:range xsd:boolean .
+:requierePDF a owl:DatatypeProperty ; rdfs:label "requiere PDF"@es ; rdfs:domain :Entregable ; rdfs:range xsd:boolean .
+:requiereDefensa a owl:DatatypeProperty ; rdfs:label "requiere defensa"@es ; rdfs:domain :Entregable ; rdfs:range xsd:boolean .
+
+#################################################################
+# Individuos: curso/semestre/tarea
+#################################################################
+
+:CCII_IA a :Curso ;
+  rdfs:label "Ciencias e Ingenierías - IA"@es .
+
+:Sem_202510 a :Semestre ;
+  rdfs:label "202510 – Primer Semestre 2025/2026"@es .
+
+:Prof_DanielRiofrio a :Profesor ;
+  rdfs:label "Daniel Riofrío"@es ;
+  :descripcion "Profesor contacto: driofrioa@usfq.edu.ec, Telegram: @danielriofrio"@es .
+
+:TareaI a :Tarea ;
+  rdfs:label "TAREA I: Métodos de Búsqueda, Juegos y Heurística"@es ;
+  :perteneceACurso :CCII_IA ;
+  :enSemestre :Sem_202510 ;
+  :dirigidaPor :Prof_DanielRiofrio .
+
+#################################################################
+# Individuos: algoritmos y heurísticas
+#################################################################
+
+:BFS a :AlgoritmoBusqueda ; rdfs:label "Breadth-First Search"@es .
+:DFS a :AlgoritmoBusqueda ; rdfs:label "Depth-First Search"@es .
+:BestFirst a :AlgoritmoBusqueda ; rdfs:label "Best-First Search"@es .
+
+:Heur_Correctas a :Heuristica ; rdfs:label "Número de baldosas bien ubicadas"@es .
+:Heur_Manhattan a :Heuristica ; rdfs:label "Distancia Manhattan"@es .
+:Heur_Euclidiana a :Heuristica ; rdfs:label "Distancia Euclidiana"@es .
+
+#################################################################
+# Individuos: lenguajes y herramientas
+#################################################################
+
+:Java a :Lenguaje ; rdfs:label "Java"@es .
+:C a :Lenguaje ; rdfs:label "C"@es .
+:CPP a :Lenguaje ; rdfs:label "C++"@es .
+:Python a :Lenguaje ; rdfs:label "Python"@es .
+:Prolog a :Lenguaje ; rdfs:label "Prolog"@es .
+
+:Protege a :Herramienta ; rdfs:label "Protégé"@es .
+:W3C_Doc a :Herramienta ; rdfs:label "Documentación W3C (RDF/OWL)"@es .
+
+#################################################################
+# Individuos: problemas/juegos
+#################################################################
+
+:EightTile a :Juego ;
+  rdfs:label "8-Tile (8-Puzzle)"@es ;
+  :tamanoTablero "3x3" .
+
+:NQueens a :Problema ;
+  rdfs:label "N-Queens"@es ;
+  :tamanoTablero "NxN (N ∈ {5,8,11,27})" .
+
+:FourInRow a :Juego ;
+  rdfs:label "4-en raya (tic-tac-toe 4x4)"@es ;
+  :tamanoTablero "4x4" .
+
+:FWGC a :ProblemaLogico ;
+  rdfs:label "Farmer, Wolf, Goat, Cabbage"@es .
+
+:MissionariesCannibals a :ProblemaLogico ;
+  rdfs:label "Misioneros y Caníbales"@es .
+
+#################################################################
+# Individuos: ejercicios
+#################################################################
+
+:Ej1 a :Ejercicio ;
+  rdfs:label "Ejercicio 1: 8-Tile y búsqueda"@es ;
+  :abordaProblema :EightTile ;
+  :utilizaAlgoritmo :BFS , :DFS , :BestFirst ;
+  :utilizaHeuristica :Heur_Correctas , :Heur_Manhattan , :Heur_Euclidiana ;
+  :requiereEstructura :Grafo , :Arbol ;
+  :descripcion "Generar grafo/árbol de jugadas y comparar estados visitados, profundidad/ancho y caminos para BFS, DFS y Best-First con tres heurísticas."@es .
+
+:Ej2 a :Ejercicio ;
+  rdfs:label "Ejercicio 2: N-Queens (Backtracking)"@es ;
+  :abordaProblema :NQueens ;
+  :seProgramaEn :Java , :C , :CPP , :Python ;
+  :descripcion "Resolver N-Queens para tableros 5x5, 8x8, 11x11 y 27x27; volcar soluciones (5x5, 8x8) y discutir escalabilidad."@es .
+
+:Ej3 a :Ejercicio ;
+  rdfs:label "Ejercicio 3: 4-en raya con Best-First"@es ;
+  :abordaProblema :FourInRow ;
+  :utilizaAlgoritmo :BestFirst ;
+  :utilizaHeuristica :Heur_Manhattan , :Heur_Euclidiana ;
+  :descripcion "Encontrar camino entre estados dados (tres casos), reportar generados/visitados/camino y mostrar que (b) no tiene ganador."@es .
+
+:Ej4 a :Ejercicio ;
+  rdfs:label "Ejercicio 4: Programas Lógicos en Prolog"@es ;
+  :abordaProblema :FWGC , :MissionariesCannibals ;
+  :seProgramaEn :Prolog ;
+  :descripcion "Modelar y resolver FWGC y Misioneros-Caníbales en Prolog."@es .
+
+:Ej5 a :Ejercicio ;
+  rdfs:label "Ejercicio 5: Verificación"@es ;
+  :requiereVerificacionCon :Java , :C , :CPP , :Python ;
+  :descripcion "Verificar soluciones lógicas con lenguaje imperativo (preferible backtracking)."@es .
+
+:Ej6 a :Ejercicio ;
+  rdfs:label "Ejercicio 6: Redes Semánticas (RDF/OWL)"@es ;
+  :requiereHerramienta :Protege , :W3C_Doc ;
+  :descripcion "Construir una ontología OWL que modele el enunciado y visualizarla en Protégé."@es .
+
+# Vincular ejercicios a la tarea
+:TareaI :tieneEjercicio :Ej1 , :Ej2 , :Ej3 , :Ej4 , :Ej5 , :Ej6 .
+
+#################################################################
+# Estados de ejemplo (placeholders para Ej3)
+#################################################################
+
+:Estado3a_Inicial a :Estado ; rdfs:label "E3(a) Inicial"@es .
+:Estado3a_Final   a :Estado ; rdfs:label "E3(a) Final"@es .
+:Estado3b_Inicial a :Estado ; rdfs:label "E3(b) Inicial"@es .
+:Estado3b_Final   a :Estado ; rdfs:label "E3(b) Final"@es .
+:Estado3c_Inicial a :Estado ; rdfs:label "E3(c) Inicial"@es .
+:Estado3c_Final   a :Estado ; rdfs:label "E3(c) Final"@es .
+
+# Asociar estados a Ej3
+:Ej3 :tieneEstadoInicial :Estado3a_Inicial , :Estado3b_Inicial , :Estado3c_Inicial ;
+     :tieneEstadoFinal   :Estado3a_Final   , :Estado3b_Final   , :Estado3c_Final .
+
+#################################################################
+# Entregables
+#################################################################
+
+:EntregablePDF a :Entregable ;
+  rdfs:label "PDF con respuestas y discusión"@es ;
+  :requierePDF true .
+
+:EntregableCodigo a :Entregable ;
+  rdfs:label "Código fuente y archivos relevantes"@es ;
+  :requiereCodigoFuente true .
+
+:EntregableDefensa a :Entregable ;
+  rdfs:label "Defensa en oficina (80% de la nota)"@es ;
+  :requiereDefensa true .
+
+:TareaI :defineEntregable :EntregablePDF , :EntregableCodigo , :EntregableDefensa .
+
+#################################################################
+# Ontología generada como archivo y su visualización
+#################################################################
+
+:OntologiaGenerada a :OntologiaOWL ;
+  :titulo "tarea1.owl.ttl" ;
+  :visualizaCon :Protege ;
+  rdfs:comment "Este propio archivo es el entregable del Ejercicio 6 para la red semántica."@es .

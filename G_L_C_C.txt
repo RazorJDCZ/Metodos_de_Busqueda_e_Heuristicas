@@ -1,0 +1,84 @@
+% Juan Diego Cadena
+% 329220
+
+% Lados
+opuesto(izq, der).
+opuesto(der, izq).
+
+% Estados
+inicial(st(izq,izq,izq,izq)).
+meta(   st(der,der,der,der)).
+
+% Seguridad
+seguro(st(G,L,Ca,Co)) :-
+    \+ (L = Ca, G \= L),      % Lobo con Cabra sin granjero
+    \+ (Ca = Co, G \= Ca).    % Cabra con Col sin granjero
+
+% Movimientos
+mover(st(G,L,Ca,Co), solo,      st(G1,L,Ca,Co)) :- opuesto(G,G1).
+mover(st(G,G,Ca,Co), con_lobo,  st(G1,G1,Ca,Co)) :- opuesto(G,G1).
+mover(st(G,L,G,Co), con_cabra,  st(G1,L,G1,Co)) :- opuesto(G,G1).
+mover(st(G,L,Ca,G), con_col,    st(G1,L,Ca,G1)) :- opuesto(G,G1).
+
+paso_valido(E1, A, E2) :- mover(E1,A,E2), seguro(E2).
+
+
+resolver_camino(CaminoPairs) :-
+    inicial(E0),
+    seguro(E0),
+    bfs([ [[inicio,E0]] ], CaminoRev),      % cola inicial con un camino
+    reverse(CaminoRev, CaminoPairs).
+
+bfs([Camino|_], Camino) :-                  % ¿meta?
+    Camino = [[_,E]|_],
+    meta(E), !.
+bfs([Camino|RestoCola], Sol) :-             % expandir primer camino y encolar hijos
+    Camino = [[_,E]|_],
+    findall([[A,E2]|Camino],
+            ( paso_valido(E, A, E2),
+              \+ member([_,E2], Camino)     % evitar ciclos por estado repetido
+            ),
+            Hijos),
+    append(RestoCola, Hijos, Cola2),
+    bfs(Cola2, Sol).
+
+% Interfaces de uso 
+% 1) Lista de pasos (accion + estado)
+solucion(Pasos) :-
+    resolver_camino(Pares),
+    findall(paso(A,Est), member([A,Est], Pares), Pasos).
+
+% 2) Solo la lista de acciones (sin 'inicio')
+acciones(Acciones) :-
+    resolver_camino(Pares),
+    findall(A,
+            ( member([A,_], Pares), A \= inicio ),
+            Acciones).
+
+
+lado_txt(izq,'Izquierda').
+lado_txt(der,'Derecha').
+
+accion_txt(inicio,   "Inicio").
+accion_txt(solo,     "El granjero cruza solo").
+accion_txt(con_lobo, "El granjero lleva al LOBO").
+accion_txt(con_cabra,"El granjero lleva a la CABRA").
+accion_txt(con_col,  "El granjero lleva la COL").
+
+estado_linea(st(G,L,Ca,Co), S) :-
+    lado_txt(G,GG), lado_txt(L,LL), lado_txt(Ca,CC), lado_txt(Co,CO),
+    format(string(S), "Granjero: ~w | Lobo: ~w | Cabra: ~w | Col: ~w",
+           [GG,LL,CC,CO]).
+
+imprimir_solucion :-
+    resolver_camino(Pares),
+    forall(nth0(I, Pares, [A,Est]),
+           ( accion_txt(A,AT),
+             estado_linea(Est,ST),
+             format("~d) ~w~n    -> ~w~n", [I,AT,ST]) )).
+
+/** <examples>
+?- imprimir_solucion.
+?- solucion(P).
+?- acciones(A).
+*/

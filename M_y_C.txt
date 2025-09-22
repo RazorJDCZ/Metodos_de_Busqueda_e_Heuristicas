@@ -1,0 +1,89 @@
+% Juan Diego Cadena
+% 329220
+
+% Punto de entrada cómodo
+resolver :-
+    inicio(Estado0),
+    bfs([(Estado0, [])], [Estado0], PlanReverso),
+    reverse(PlanReverso, Plan),
+    escribir_plan(Estado0, Plan).
+
+% Estado inicial y objetivo
+inicio(estado(3,3,izq)).
+objetivo(estado(0,0,der)).
+
+% Movimientos posibles del bote (capacidad 1 o 2)
+
+mov(2,0,'Cruzan 2 misioneros').
+mov(0,2,'Cruzan 2 caníbales').
+mov(1,1,'Cruzan 1 misionero y 1 caníbal').
+mov(1,0,'Cruza 1 misionero').
+mov(0,1,'Cruza 1 caníbal').
+
+% BFS: cola de tuplas (Estado, CaminoHastaAqui),
+
+bfs([(Estado, Camino)|_], _, Camino) :-
+    objetivo(Estado), !.
+bfs([(Estado, Camino)|RestoCola], Visitados, Solucion) :-
+    findall( (EstadoSiguiente, [(Accion, EstadoSiguiente)|Camino]),
+             ( sucesor(Estado, EstadoSiguiente, Accion),
+               \+ member(EstadoSiguiente, Visitados)
+             ),
+             Expandidos),
+    agregar_a_cola(RestoCola, Expandidos, NuevaCola),
+    extraer_estados(Expandidos, NuevosEstados),
+    append(Visitados, NuevosEstados, Visitados2),
+    bfs(NuevaCola, Visitados2, Solucion).
+
+% Genera sucesores válidos según dónde esté el bote
+sucesor(estado(MI,CI,izq), estado(MI2,CI2,der), Accion) :-
+    mov(M,C, Texto),
+    MI2 is MI - M, CI2 is CI - C,
+    seguro(MI2, CI2),
+    format(string(Accion), "~w de izquierda a derecha", [Texto]).
+
+sucesor(estado(MI,CI,der), estado(MI2,CI2,izq), Accion) :-
+    mov(M,C, Texto),
+    MI2 is MI + M, CI2 is CI + C,
+    seguro(MI2, CI2),
+    format(string(Accion), "~w de derecha a izquierda", [Texto]).
+
+% Comprobación de seguridad:
+
+seguro(MI, CI) :-
+    between(0,3,MI),
+    between(0,3,CI),
+    MR is 3 - MI, CR is 3 - CI,
+    MR >= 0, CR >= 0,
+    (MI =:= 0 ; MI >= CI),   
+    (MR =:= 0 ; MR >= CR).   
+
+% Utilidades para la cola y visitados
+agregar_a_cola(Cola, ListaPairs, NuevaCola) :-
+    append(Cola, ListaPairs, NuevaCola).
+
+extraer_estados([], []).
+extraer_estados([(E,_)|R], [E|RT]) :- extraer_estados(R, RT).
+
+% Mostrar el plan paso a paso con estados
+escribir_plan(EstadoInicial, Plan) :-
+    nl, writeln('Plan encontrado (longitud mínima):'), nl,
+    escribir_pasos(1, EstadoInicial, Plan),
+    nl, writeln('¡Todos cruzaron de forma segura!').
+
+escribir_pasos(_, Estado, []) :-
+    format("Estado final: ~w~n", [Estado]).
+escribir_pasos(N, EstadoActual, [(Accion, EstadoSiguiente)|Resto]) :-
+    format("Paso ~d: ~s~n", [N, Accion]),
+    mostrar_estados(EstadoActual, EstadoSiguiente),
+    N2 is N + 1,
+    escribir_pasos(N2, EstadoSiguiente, Resto).
+
+
+mostrar_estados(estado(MI,CI, Bote1), estado(MF,CF, Bote2)) :-
+    MR1 is 3 - MI, CR1 is 3 - CI,
+    MR2 is 3 - MF, CR2 is 3 - CF,
+    format("   Antes: Izq=(M=~w, C=~w), Der=(M=~w, C=~w), Bote=~w~n",
+           [MI,CI,MR1,CR1,Bote1]),
+    format("   Después: Izq=(M=~w, C=~w), Der=(M=~w, C=~w), Bote=~w~n~n",
+           [MF,CF,MR2,CR2,Bote2]).
